@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "171949612884",
+    "firebase_url": "https://mychat-45065-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "mychat-45065",
+    "storage_bucket": "mychat-45065.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:171949612884:android:d2b1dd5547d81a87e4b2c1",
+        "android_client_info": {
+          "package_name": "com.extro.vostr.fbchatextro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIIWw4hDrVZoldcAiuXvfuPJD9hTT95OE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
