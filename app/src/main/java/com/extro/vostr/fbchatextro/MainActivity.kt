@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.extro.vostr.fbchatextro.adapter.MessageAdapter
 import com.extro.vostr.fbchatextro.databinding.ActivityMainBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -18,8 +20,9 @@ import com.squareup.picasso.Picasso
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMainBinding
-    lateinit var auth : FirebaseAuth
+    private lateinit var binding: ActivityMainBinding
+    lateinit var auth: FirebaseAuth
+    lateinit var adapter: MessageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,11 +37,20 @@ class MainActivity : AppCompatActivity() {
 
 
         binding.btSent.setOnClickListener {
-            myRef.setValue(binding.etMassage.text.toString())
+            //child для уникального значения чтобы не было перезаписи
+            myRef.child(myRef.push().key ?: "errorPath")
+                .setValue(User(auth.currentUser?.displayName, binding.etMassage.text.toString()))
         }
         onChangeListener(myRef)
+        initRcView()
+        binding.etMassage.text.clear()
 
+    }
 
+    private fun initRcView() = with(binding) {
+        adapter = MessageAdapter()
+        rvMassages.layoutManager = LinearLayoutManager(this@MainActivity)
+        rvMassages.adapter = adapter
     }
 
     // Добавить меню
@@ -48,7 +60,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.sign_out){
+        if (item.itemId == R.id.sign_out) {
             auth.signOut()
             finish()
         }
@@ -56,14 +68,19 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-    private fun onChangeListener(dRef : DatabaseReference){
-        dRef.addValueEventListener(object : ValueEventListener{
+    private fun onChangeListener(dRef: DatabaseReference) {
+        dRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-              binding.apply {
-                  rcView.append("\n")
-                  rcView.append(snapshot.value.toString())
-              }
+                binding.apply {
+                    val list = ArrayList<User>()
+                    for (s in snapshot.children) {
+                        val user = s.getValue(User::class.java)
+                        if (user != null) {
+                            list.add(user)
+                        }
+                    }
+                    adapter.submitList(list)
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -73,16 +90,20 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun setUpActionBar(){
+    private fun setUpActionBar() {
         val ab = supportActionBar
-        Thread{
-            val bMap = Picasso.get().load(auth.currentUser?.photoUrl).get()//загружаем картинку в пикассо и переводит в битмап
-            val dIcon = BitmapDrawable(resources, bMap) //превращяет битмап в drawable чтобы передать его в setHomeAsUpIndicator(dIcon)
-           runOnUiThread{ //запкскаем на основном потоке т.к. идет изменение ui
-               ab?.setDisplayHomeAsUpEnabled(true) // появится картинка в левом верхнем углу(home button)
-               ab?.setHomeAsUpIndicator(dIcon)
-               ab?.title = auth.currentUser?.displayName
-           }
+        Thread {
+            val bMap = Picasso.get().load(auth.currentUser?.photoUrl)
+                .get()//загружаем картинку в пикассо и переводит в битмап
+            val dIcon = BitmapDrawable(
+                resources,
+                bMap
+            ) //превращяет битмап в drawable чтобы передать его в setHomeAsUpIndicator(dIcon)
+            runOnUiThread { //запкскаем на основном потоке т.к. идет изменение ui
+                ab?.setDisplayHomeAsUpEnabled(true) // появится картинка в левом верхнем углу(home button)
+                ab?.setHomeAsUpIndicator(dIcon)
+                ab?.title = auth.currentUser?.displayName
+            }
         }.start()
 
     }
