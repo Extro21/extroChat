@@ -13,7 +13,20 @@
           "package_name": "com.extro.vostr.fbchatextro"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "171949612884-fqilvgkvj6jtn2h8q97njq2qv3qo6gr0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.extro.vostr.fbchatextro",
+            "certificate_hash": "74fd2fe501f6617081f816d09b044bb85c65faf8"
+          }
+        },
+        {
+          "client_id": "171949612884-ac5nu5fca9bj6bopuh0pd8uei3mlt7he.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAIIWw4hDrVZoldcAiuXvfuPJD9hTT95OE"
@@ -21,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "171949612884-ac5nu5fca9bj6bopuh0pd8uei3mlt7he.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
