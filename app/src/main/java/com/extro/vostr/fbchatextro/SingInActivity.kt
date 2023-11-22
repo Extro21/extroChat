@@ -15,6 +15,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
+import com.squareup.picasso.Picasso
 
 class SingInActivity : AppCompatActivity() {
 
@@ -44,6 +45,7 @@ class SingInActivity : AppCompatActivity() {
         binding.btSingIn.setOnClickListener {
             singInWithGoogle()
         }
+        checkAuthState()
     }
 
     private fun getClient() : GoogleSignInClient {
@@ -64,12 +66,21 @@ class SingInActivity : AppCompatActivity() {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential).addOnCompleteListener {
             if(it.isSuccessful){
-                Log.d("myLog", "good")
+                checkAuthState()
             } else {
                 Log.d("myLog", "not good")
             }
         }
     }
+
+    private fun checkAuthState(){
+        if(auth.currentUser != null){
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+
 
 
 //    private fun getClient() : GoogleSignInClient {
